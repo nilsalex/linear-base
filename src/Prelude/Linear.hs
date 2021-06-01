@@ -51,7 +51,6 @@ module Prelude.Linear
   , Prelude.Real (..)
   , Prelude.Integral (..)
   , Prelude.Floating (..)
-  , Prelude.Fractional (..)
   , Prelude.RealFrac (..)
   , Prelude.RealFloat (..)
     -- *** Numeric functions

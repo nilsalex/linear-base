@@ -30,6 +30,7 @@ module Data.Num.Linear
   , AdditiveGroup(..)
   , Multiplicative(..)
   , MultIdentity(..)
+  , MultGroup(..)
   , Semiring
   , Ring
   , FromInteger(..)
@@ -73,6 +74,10 @@ class Multiplicative a where
 -- | A 'Multipcative' type with an identity for @(*)@
 class Multiplicative a => MultIdentity a where
   one :: a
+
+class MultIdentity a => MultGroup a where
+  recip :: a %1-> a
+  (/) :: a %1 -> a %1-> a
 
 -- | A [semiring](https://en.wikipedia.org/wiki/Semiring) class. This is
 -- basically a numeric type with mutliplication, addition and with identities
@@ -126,6 +131,28 @@ instance (Movable a, Prelude.Num a) => Multiplicative (MovableNum a) where
 instance (Movable a, Prelude.Num a) => MultIdentity (MovableNum a) where
   one = MovableNum 1
 
+newtype MovableFrac a = MovableFrac a
+  deriving (Consumable, Dupable, Movable, Prelude.Num, Prelude.Fractional)
+
+instance (Movable a, Prelude.Fractional a) => Additive (MovableFrac a) where
+  (+) = liftU2 (Prelude.+)
+
+instance (Movable a, Prelude.Fractional a) => AddIdentity (MovableFrac a) where
+  zero = MovableFrac 0
+
+instance (Movable a, Prelude.Fractional a) => AdditiveGroup (MovableFrac a) where
+  (-) = liftU2 (Prelude.-)
+
+instance (Movable a, Prelude.Fractional a) => Multiplicative (MovableFrac a) where
+  (*) = liftU2 (Prelude.*)
+
+instance (Movable a, Prelude.Fractional a) => MultIdentity (MovableFrac a) where
+  one = MovableFrac 1
+
+instance (Movable a, Prelude.Fractional a) => MultGroup (MovableFrac a) where
+  recip = liftU Prelude.recip
+  (/)   = liftU2 (Prelude./)
+
 instance (Movable a, Prelude.Num a) => Semiring (MovableNum a) where
 instance (Movable a, Prelude.Num a) => Ring (MovableNum a) where
 
@@ -174,19 +201,31 @@ instance MultIdentity a => Monoid (Multiplying a)
 
 deriving via MovableNum Prelude.Int instance Additive Prelude.Int
 deriving via MovableNum Prelude.Double instance Additive Prelude.Double
+deriving via MovableNum Prelude.Float instance Additive Prelude.Float
 deriving via MovableNum Prelude.Int instance AddIdentity Prelude.Int
 deriving via MovableNum Prelude.Double instance AddIdentity Prelude.Double
+deriving via MovableNum Prelude.Float instance AddIdentity Prelude.Float
 deriving via MovableNum Prelude.Int instance AdditiveGroup Prelude.Int
 deriving via MovableNum Prelude.Double instance AdditiveGroup Prelude.Double
+deriving via MovableNum Prelude.Float instance AdditiveGroup Prelude.Float
 deriving via MovableNum Prelude.Int instance Multiplicative Prelude.Int
 deriving via MovableNum Prelude.Double instance Multiplicative Prelude.Double
+deriving via MovableNum Prelude.Float instance Multiplicative Prelude.Float
 deriving via MovableNum Prelude.Int instance MultIdentity Prelude.Int
 deriving via MovableNum Prelude.Double instance MultIdentity Prelude.Double
+deriving via MovableNum Prelude.Float instance MultIdentity Prelude.Float
 deriving via MovableNum Prelude.Int instance Semiring Prelude.Int
 deriving via MovableNum Prelude.Double instance Semiring Prelude.Double
+deriving via MovableNum Prelude.Float instance Semiring Prelude.Float
 deriving via MovableNum Prelude.Int instance Ring Prelude.Int
 deriving via MovableNum Prelude.Double instance Ring Prelude.Double
+deriving via MovableNum Prelude.Float instance Ring Prelude.Float
 deriving via MovableNum Prelude.Int instance FromInteger Prelude.Int
 deriving via MovableNum Prelude.Double instance FromInteger Prelude.Double
+deriving via MovableNum Prelude.Float instance FromInteger Prelude.Float
 deriving via MovableNum Prelude.Int instance Num Prelude.Int
 deriving via MovableNum Prelude.Double instance Num Prelude.Double
+deriving via MovableNum Prelude.Float instance Num Prelude.Float
+
+deriving via MovableFrac Prelude.Double instance MultGroup Prelude.Double
+deriving via MovableFrac Prelude.Float instance MultGroup Prelude.Float

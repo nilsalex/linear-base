@@ -102,6 +102,15 @@ instance Movable Double where
   -- copying an 'Double#' and using it several times. /!\
   move (D# i) = Unsafe.toLinear (\j -> Ur (D# j)) i
 
+instance Consumable Float where
+  consume (F# i) = Unsafe.toLinear (\_ -> ()) i
+
+instance Dupable Float where
+  dupV (F# i) = Unsafe.toLinear (\j -> Data.pure (F# j)) i
+
+instance Movable Float where
+  move (F# i) = Unsafe.toLinear (\j -> Ur (F# j)) i
+
 instance Consumable Char where
   consume (C# c) = Unsafe.toLinear (\_ -> ()) c
 
